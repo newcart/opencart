@@ -1,0 +1,20 @@
+{
+  "name": "prhost/opencommerce-core",
+  "description": "OpenCommerce Core (Opencart)",
+  "type": "opencommerce-core",
+  "license": "GPL-3.0",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Kallef",
+      "email": "prhost@prhost.com.br"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Core\\Admin\\": "admin/",
+      "Core\\Catalog\\": "catalog/",
+      "Core\\System\\": "system/"
+    }
+  }
+}
