@@ -1,6 +1,6 @@
 {
   "name": "prhost/opencommerce-core",
-  "description": "OpenCommerce Core (Opencart)",
+  "description": "OpenCommerce Core (Opencart v2.0.0.0)",
   "type": "opencommerce-core",
   "license": "GPL-3.0",
   "minimum-stability": "dev",
