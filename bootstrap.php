@@ -2,11 +2,6 @@
 // Version
 define('VERSION', '2.0.0.0');
 
-// Configuration
-if (is_file('config.php')) {
-	require_once('config.php');
-}
-
 // Install
 if (!defined('DIR_APPLICATION')) {
 	header('Location: install/index.php');
@@ -254,9 +249,3 @@ if (isset($request->get['route'])) {
 } else {
 	$action = new Action('common/home');
 }
-
-// Dispatch
-$controller->dispatch($action, new Action('error/not_found'));
-
-// Output
-$response->output();
