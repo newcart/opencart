@@ -1,15 +1,10 @@
 <?php
+
 // Version
 define('VERSION', '2.0.0.0');
 
-// Install
-if (!defined('DIR_APPLICATION')) {
-	header('Location: install/index.php');
-	exit;
-}
-
-// Startup
-require_once(DIR_SYSTEM . 'startup.php');
+// VQMODDED Startup
+require_once(\Prhost\System\Vqmod\Vqmod::modCheck(DIR_SYSTEM . 'startup.php'));
 
 // Registry
 $registry = new Registry();

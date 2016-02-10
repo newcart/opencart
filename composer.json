@@ -1,7 +1,7 @@
 {
-  "name": "prhost/opencommerce-opencart",
-  "description": "OpenCommerce Opencart v2.0.0.0",
-  "type": "opencommerce-opencart",
+  "name": "newcart/opencart",
+  "description": "NewCart Ecommerce Opencart v2.0.0.0",
+  "type": "newcart-opencart",
   "license": "GPL-3.0",
   "minimum-stability": "dev",
   "authors": [
