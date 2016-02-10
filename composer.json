@@ -3,7 +3,6 @@
   "description": "NewCart Ecommerce Opencart",
   "type": "newcart-opencart",
   "license": "GPL-3.0",
-  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Kallef",
