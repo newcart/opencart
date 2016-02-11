@@ -4,7 +4,11 @@
 define('VERSION', '2.0.0.0');
 
 // VQMODDED Startup
-require_once(\Prhost\System\Vqmod\Vqmod::modCheck(DIR_SYSTEM . 'startup.php'));
+if(ENABLE_VQMOD) {
+	require_once(Vqmod::modCheck(DIR_SYSTEM . 'startup.php'));
+} else {
+	require_once(DIR_SYSTEM . 'startup.php');
+}
 
 // Registry
 $registry = new Registry();
