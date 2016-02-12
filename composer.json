@@ -1,9 +1,8 @@
 {
   "name": "newcart/opencart",
-  "description": "NewCart Ecommerce Opencart v2.0.0.0",
+  "description": "NewCart Ecommerce Opencart",
   "type": "newcart-opencart",
   "license": "GPL-3.0",
-  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Kallef",
