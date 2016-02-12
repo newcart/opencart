@@ -4,7 +4,11 @@
 define('VERSION', '2.0.0.0');
 
 // VQMODDED Startup
-require_once(\Prhost\System\Vqmod\Vqmod::modCheck(DIR_SYSTEM . 'startup.php'));
+if ($config->get('enable_vqmod')) {
+	require_once(Vqmod::modCheck(DIR_SYSTEM . 'startup.php'));
+} else {
+	require_once(DIR_SYSTEM . 'startup.php');
+}
 
 // Registry
 $registry = new Registry();
@@ -14,11 +18,10 @@ $loader = new Loader($registry);
 $registry->set('load', $loader);
 
 // Config
-$config = new Config();
 $registry->set('config', $config);
 
 // Database
-$db = new DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+$db = new DB($config->get('db_driver'), $config->get('db_hostname'), $config->get('db_username'), $config->get('db_password'), $config->get('db_schema'));
 $registry->set('db', $db);
 
 // Store

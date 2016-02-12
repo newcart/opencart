@@ -27,24 +27,86 @@ final class Loader {
 	}
 
 	public function view($template, $data = array()) {
-		$file = DIR_TEMPLATE . $template;
 
-		if (file_exists($file)) {
-			extract($data);
+		Twig_Autoloader::register();
 
-			ob_start();
+		$paths = [];
 
-			require($file);
+		//check vqmod view
+		$vqmod_template = VQMod::modCheck(DIR_TEMPLATE . $template);
+		if(strpos($vqmod_template, DIR_VQMOD_CACHE) !== false) {
 
-			$output = ob_get_contents();
+			$paths[] = DIR_VQMOD_CACHE;
+			$template = str_replace(DIR_VQMOD_CACHE, '', $vqmod_template);
 
-			ob_end_clean();
-
-			return $output;
 		} else {
-			trigger_error('Error: Could not load template ' . $file . '!');
-			exit();
+			//load theme view
+			if (is_dir(DIR_TEMPLATE . $this->registry->get('config')->get('config_template') . '/template')) {
+				$paths[] = DIR_TEMPLATE . $this->registry->get('config')->get('config_template') . '/template';
+			}
+
+			if (is_dir(DIR_TEMPLATE . 'default/template')) {
+				$paths[] = DIR_TEMPLATE . 'default/template';
+			}
+
+			//load others view
+			$paths[] = DIR_TEMPLATE;
+
+			//load extension view
+			if(IS_ADMIN) {
+				$extensions_path = glob(DIR_ROOT . '/extensions/*/app/' . CATALOG_OR_ADMIN . '/view/template/', GLOB_ONLYDIR);
+				if($extensions_path && is_array($extensions_path) && count($extensions_path)) {
+					$paths = array_merge($paths, $extensions_path);
+				}
+			} else {
+				$template_extension = str_replace($this->registry->get('config')->get('config_template') . '/template/', '', $template);
+				$extensions_path = glob(DIR_ROOT . '/extensions/*/theme/template/', GLOB_ONLYDIR);
+				if($extensions_path && is_array($extensions_path) && count($extensions_path)) {
+					foreach ($extensions_path as $item) {
+						if(file_exists($item . $template_extension)) {
+							$template = $template_extension;
+							$paths = array_merge($paths, $extensions_path);
+						}
+					}
+				}
+			}
 		}
+
+		$fileSystem = new Twig_Loader_Filesystem($paths);
+
+		$loader = new Twig_Loader_Chain([$fileSystem]);
+
+		$cache = false;
+		if (defined('TWIG_CACHE')) {
+			$cache = TWIG_CACHE;
+		}
+
+		$twig = new Twig_Environment($fileSystem, array(
+			'autoescape' => false,
+			'cache'      => $cache,
+			'debug'      => true
+		));
+
+		$twig->addExtension(new Twig_Extension_Debug());
+//		$twig->addExtension(new \Metastore\System\Twig\Extension\Metastore($this->registry));
+
+		$this->registry->set('twig', $twig);
+		extract($data);
+		ob_start();
+
+		// First Step - Render Twig Native Templates
+		try {
+			$output = $this->registry->get('twig')->render(str_replace('.tpl', '', $template) . '.twig', $data);
+		} catch (Exception $e) {
+			$output = $this->registry->get('twig')->render($template, $data);
+		}
+
+		// Second Step - IF template has PHP Syntax, then execute
+		eval(' ?>' . $output);
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		return $output;
 	}
 
 	public function library($library) {
