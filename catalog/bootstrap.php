@@ -18,7 +18,7 @@ $loader = new Loader($registry);
 $registry->set('load', $loader);
 
 // Config
-$config = new Config();
+$config = $GLOBALS['config'];
 $registry->set('config', $config);
 
 // Database
