@@ -6,6 +6,11 @@ final class Loader {
 		$this->registry = $registry;
 	}
 
+	public function __get($key)
+	{
+		return $this->registry->get($key);
+	}
+
 	public function controller($route, $args = array()) {
 		$action = new Action($route, $args);
 

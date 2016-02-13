@@ -223,6 +223,11 @@ $registry->set('encryption', new Encryption($config->get('config_encryption')));
 //OpenBay Pro
 $registry->set('openbay', new Openbay($registry));
 
+/**
+ * Load libraries newcart
+ */
+require_once DIR_ROOT . '/vendor/newcart/system/src/Newcart/System/loadLibraries.php';
+
 // Event
 $event = new Event($registry);
 $registry->set('event', $event);
