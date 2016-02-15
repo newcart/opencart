@@ -224,7 +224,7 @@ $registry->set('encryption', new Encryption($config->get('config_encryption')));
 $registry->set('openbay', new Openbay($registry));
 
 /**
- * Load libraries newcart
+ * Load custom libraries newcart
  */
 require_once DIR_ROOT . '/vendor/newcart/system/src/Newcart/System/loadLibraries.php';
 
