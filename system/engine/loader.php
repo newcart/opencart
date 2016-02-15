@@ -37,6 +37,14 @@ final class Loader {
 
 		$paths = [];
 
+		//pega o nome do template atual
+		$template_name = $this->registry->get('config')->get('config_template');
+
+		//fix se ta sentando tema default
+		if(strpos($template, 'default/template/') !== false) {
+			$template = str_replace('default/template/', $template_name . '/template/', $template);
+		}
+
 		//check vqmod view
 		$vqmod_template = VQMod::modCheck(DIR_TEMPLATE . $template);
 		if(strpos($vqmod_template, DIR_VQMOD_CACHE) !== false) {
@@ -46,8 +54,8 @@ final class Loader {
 
 		} else {
 			//load theme view
-			if (is_dir(DIR_TEMPLATE . $this->registry->get('config')->get('config_template') . '/template')) {
-				$paths[] = DIR_TEMPLATE . $this->registry->get('config')->get('config_template') . '/template';
+			if (is_dir(DIR_TEMPLATE . $template_name . '/template')) {
+				$paths[] = DIR_TEMPLATE . $template_name . '/template';
 			}
 
 			if (is_dir(DIR_TEMPLATE . 'default/template')) {
@@ -64,7 +72,7 @@ final class Loader {
 					$paths = array_merge($paths, $extensions_path);
 				}
 			} else {
-				$template_extension = str_replace($this->registry->get('config')->get('config_template') . '/template/', '', $template);
+				$template_extension = str_replace($template_name . '/template/', '', $template);
 				$extensions_path = glob(DIR_ROOT . '/extensions/*/theme/template/', GLOB_ONLYDIR);
 				if($extensions_path && is_array($extensions_path) && count($extensions_path)) {
 					foreach ($extensions_path as $item) {
@@ -93,16 +101,16 @@ final class Loader {
 		));
 
 		$twig->addExtension(new Twig_Extension_Debug());
-//		$twig->addExtension(new \Metastore\System\Twig\Extension\Metastore($this->registry));
+		$twig->addExtension(new \Newcart\System\TwigExtensions\Ecommerce($this->registry));
 
 		$this->registry->set('twig', $twig);
 		extract($data);
 		ob_start();
 
 		// First Step - Render Twig Native Templates
-		try {
+		if($fileSystem->exists(str_replace('.tpl', '', $template) . '.twig', $data)) {
 			$output = $this->registry->get('twig')->render(str_replace('.tpl', '', $template) . '.twig', $data);
-		} catch (Exception $e) {
+		} else {
 			$output = $this->registry->get('twig')->render($template, $data);
 		}
 
