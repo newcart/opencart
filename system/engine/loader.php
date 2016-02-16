@@ -6,18 +6,52 @@ final class Loader {
 		$this->registry = $registry;
 	}
 
-	public function __get($key)
-	{
-		return $this->registry->get($key);
+	public function controller($route, $data = array()) {
+		// $this->event->trigger('pre.controller.' . $route, $data);
+
+		$parts = explode('/', str_replace('../', '', (string)$route));
+
+		// Break apart the route
+		while ($parts) {
+			$file = DIR_APPLICATION . 'controller/' . implode('/', $parts) . '.php';
+			$class = 'Controller' . preg_replace('/[^a-zA-Z0-9]/', '', implode('/', $parts));
+
+			if (is_file($file)) {
+				include_once($file);
+
+				break;
+			} else {
+				$method = array_pop($parts);
+			}
+		}
+
+		$controller = new $class($this->registry);
+
+		if (!isset($method)) {
+			$method = 'index';
+		}
+
+		// Stop any magical methods being called
+		if (substr($method, 0, 2) == '__') {
+			return false;
+		}
+
+		$output = '';
+
+		if (is_callable(array($controller, $method))) {
+			$output = call_user_func(array($controller, $method), $data);
+		}
+
+		// $this->event->trigger('post.controller.' . $route, $output);
+
+		return $output;
 	}
 
-	public function controller($route, $args = array()) {
-		$action = new Action($route, $args);
+	public function model($model, $data = array()) {
+		// $this->event->trigger('pre.model.' . str_replace('/', '.', (string)$model), $data);
 
-		return $action->execute($this->registry);
-	}
+		$model = str_replace('../', '', (string)$model);
 
-	public function model($model) {
 		$file = DIR_APPLICATION . 'model/' . $model . '.php';
 		$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
 
@@ -29,112 +63,37 @@ final class Loader {
 			trigger_error('Error: Could not load model ' . $file . '!');
 			exit();
 		}
+
+		// $this->event->trigger('post.model.' . str_replace('/', '.', (string)$model), $output);
 	}
 
 	public function view($template, $data = array()) {
+		// $this->event->trigger('pre.view.' . str_replace('/', '.', $template), $data);
 
-		Twig_Autoloader::register();
+		$file = DIR_TEMPLATE . $template;
 
-		$paths = [];
+		if (file_exists($file)) {
+			extract($data);
 
-		//pega o nome do template atual
-		$template_name = $this->registry->get('config')->get('config_template');
+			ob_start();
 
-		//fix se ta sentando tema default
-		if(strpos($template, 'default/template/') !== false) {
-			$template = str_replace('default/template/', $template_name . '/template/', $template);
-		}
+			require($file);
 
-		//check vqmod view
-		$vqmod_template = VQMod::modCheck(DIR_TEMPLATE . $template);
-		if(strpos($vqmod_template, DIR_VQMOD_CACHE) !== false) {
+			$output = ob_get_contents();
 
-			$paths[] = DIR_VQMOD_CACHE;
-			$template = str_replace(DIR_VQMOD_CACHE, '', $vqmod_template);
-
+			ob_end_clean();
 		} else {
-			//load theme view
-			if (is_dir(DIR_TEMPLATE . $template_name . '/template')) {
-				$paths[] = DIR_TEMPLATE . $template_name . '/template';
-			}
-
-			if (is_dir(DIR_TEMPLATE . 'default/template')) {
-				$paths[] = DIR_TEMPLATE . 'default/template';
-			}
-
-			//load others view
-			$paths[] = DIR_TEMPLATE;
-
-			//load extension view
-			if(IS_ADMIN) {
-				$extensions_path = glob(DIR_ROOT . '/extensions/*/app/' . CATALOG_OR_ADMIN . '/view/template/', GLOB_ONLYDIR);
-				if($extensions_path && is_array($extensions_path) && count($extensions_path)) {
-					$paths = array_merge($paths, $extensions_path);
-				}
-			} else {
-				$template_extension = str_replace($template_name . '/template/', '', $template);
-				$extensions_path = glob(DIR_ROOT . '/extensions/*/theme/template/', GLOB_ONLYDIR);
-				if($extensions_path && is_array($extensions_path) && count($extensions_path)) {
-					foreach ($extensions_path as $item) {
-						if(file_exists($item . $template_extension)) {
-							$template = $template_extension;
-							$paths = array_merge($paths, $extensions_path);
-						}
-					}
-				}
-			}
+			trigger_error('Error: Could not load template ' . $file . '!');
+			exit();
 		}
 
-		$fileSystem = new Twig_Loader_Filesystem($paths);
-
-		$loader = new Twig_Loader_Chain([$fileSystem]);
-
-		$cache = false;
-		if (defined('TWIG_CACHE')) {
-			$cache = TWIG_CACHE;
-		}
-
-		$twig = new Twig_Environment($fileSystem, array(
-			'autoescape' => false,
-			'cache'      => $cache,
-			'debug'      => true
-		));
-
-		$twig->addExtension(new Twig_Extension_Debug());
-		$twig->addExtension(new \Newcart\System\TwigExtensions\Ecommerce($this->registry));
-
-		$this->registry->set('twig', $twig);
-		extract($data);
-		ob_start();
-
-		// First Step - Render Twig Native Templates
-		if($fileSystem->exists(str_replace('.tpl', '', $template) . '.twig', $data)) {
-			$output = $this->registry->get('twig')->render(str_replace('.tpl', '', $template) . '.twig', $data);
-		} else {
-			$output = $this->registry->get('twig')->render($template, $data);
-		}
-
-		// Second Step - IF template has PHP Syntax, then execute
-		eval(' ?>' . $output);
-		$output = ob_get_contents();
-		ob_end_clean();
+		// $this->event->trigger('post.view.' . str_replace('/', '.', $template), $output);
 
 		return $output;
 	}
 
-	public function library($library) {
-		$file = DIR_SYSTEM . 'library/' . $library . '.php';
-
-		if (file_exists($file)) {
-			include_once($file);
-		} else {
-			trigger_error('Error: Could not load library ' . $file . '!');
-			exit();
-		}
-	}
-
 	public function helper($helper) {
-		$file = DIR_SYSTEM . 'helper/' . $helper . '.php';
+		$file = DIR_SYSTEM . 'helper/' . str_replace('../', '', (string)$helper) . '.php';
 
 		if (file_exists($file)) {
 			include_once($file);
