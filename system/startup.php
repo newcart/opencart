@@ -85,7 +85,19 @@ function modification($filename) {
 
 // Autoloader
 function library($class) {
-	$file = DIR_SYSTEM . 'library/' . str_replace('\\', '/', strtolower($class)) . '.php';
+	//load extension library
+	global $registry;
+
+	$extensions_file = glob(
+		DIR_ROOT . $registry->get('config')->get('path_extension') .
+		'/*/*/system/library/' . str_replace('\\', '/', strtolower($class)) . '.php'
+	);
+
+	if($extensions_file && is_array($extensions_file) && count($extensions_file)) {
+		$file = $extensions_file[0];
+	} else {
+		$file = DIR_SYSTEM . 'library/' . str_replace('\\', '/', strtolower($class)) . '.php';
+	}
 
 	if (is_file($file)) {
 		include_once(modification($file));
@@ -97,7 +109,20 @@ function library($class) {
 }
 
 function vendor($class) {
-	$file = DIR_SYSTEM . 'vendor/' . str_replace('\\', '/', strtolower($class)) . '.php';
+
+	global $registry;
+
+	$extensions_file = glob(
+		DIR_ROOT . $registry->get('config')->get('path_extension') .
+		'/*/*/system/vendor/' . str_replace('\\', '/', strtolower($class)) . '.php'
+	);
+
+	if($extensions_file && is_array($extensions_file) && count($extensions_file)) {
+		$file = $extensions_file[0];
+	} else {
+		$file = DIR_SYSTEM . 'vendor/' . str_replace('\\', '/', strtolower($class)) . '.php';
+	}
+
 
 	if (is_file($file)) {
 		include_once(modification($file));

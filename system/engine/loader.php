@@ -1,113 +1,269 @@
 <?php
-final class Loader {
-	private $registry;
 
-	public function __construct($registry) {
-		$this->registry = $registry;
-	}
+use \Newcart\System\Libraries\Extension;
 
-	public function controller($route, $data = array()) {
-		// $this->event->trigger('pre.controller.' . $route, $data);
+final class Loader
+{
+    private $registry;
 
-		$parts = explode('/', str_replace('../', '', (string)$route));
+    public function __construct($registry)
+    {
+        $this->registry = $registry;
+    }
 
-		// Break apart the route
-		while ($parts) {
-			$file = DIR_APPLICATION . 'controller/' . implode('/', $parts) . '.php';
-			$class = 'Controller' . preg_replace('/[^a-zA-Z0-9]/', '', implode('/', $parts));
+    public function controller($route, $data = array())
+    {
+        // $this->event->trigger('pre.controller.' . $route, $data);
 
-			if (is_file($file)) {
-				include_once($file);
+        $parts = explode('/', str_replace('../', '', (string)$route));
 
-				break;
-			} else {
-				$method = array_pop($parts);
-			}
-		}
+        // Break apart the route
+        while ($parts) {
 
-		$controller = new $class($this->registry);
+            //load extension controller
+            $extensions_file = glob(DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('environment') . '/controller/' . implode('/', $parts) . '.php');
+            if ($extensions_file && is_array($extensions_file) && count($extensions_file)) {
+                $file = $extensions_file[0];
+            } else {
+                $file = DIR_APPLICATION . 'controller/' . implode('/', $parts) . '.php';
+            }
 
-		if (!isset($method)) {
-			$method = 'index';
-		}
+            $class = 'Controller' . preg_replace('/[^a-zA-Z0-9]/', '', implode('/', $parts));
 
-		// Stop any magical methods being called
-		if (substr($method, 0, 2) == '__') {
-			return false;
-		}
+            if (is_file($file)) {
+                include_once($file);
 
-		$output = '';
+                break;
+            } else {
+                $method = array_pop($parts);
+            }
+        }
 
-		if (is_callable(array($controller, $method))) {
-			$output = call_user_func(array($controller, $method), $data);
-		}
+        $controller = new $class($this->registry);
 
-		// $this->event->trigger('post.controller.' . $route, $output);
+        if (!isset($method)) {
+            $method = 'index';
+        }
 
-		return $output;
-	}
+        // Stop any magical methods being called
+        if (substr($method, 0, 2) == '__') {
+            return false;
+        }
 
-	public function model($model, $data = array()) {
-		// $this->event->trigger('pre.model.' . str_replace('/', '.', (string)$model), $data);
+        $output = '';
 
-		$model = str_replace('../', '', (string)$model);
+        if (is_callable(array($controller, $method))) {
+            $output = call_user_func(array($controller, $method), $data);
+        }
 
-		$file = DIR_APPLICATION . 'model/' . $model . '.php';
-		$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
+        // $this->event->trigger('post.controller.' . $route, $output);
 
-		if (file_exists($file)) {
-			include_once($file);
+        return $output;
+    }
 
-			$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
-		} else {
-			trigger_error('Error: Could not load model ' . $file . '!');
-			exit();
-		}
+    public function model($model, $data = array())
+    {
+        // $this->event->trigger('pre.model.' . str_replace('/', '.', (string)$model), $data);
 
-		// $this->event->trigger('post.model.' . str_replace('/', '.', (string)$model), $output);
-	}
+        //load extension model
+        $extensions_file = glob(DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('environment') . '/model/' . $model . '.php');
+        if ($extensions_file && is_array($extensions_file) && count($extensions_file)) {
+            $file = $extensions_file[0];
+        } else {
+            $file = DIR_APPLICATION . 'model/' . $model . '.php';
+        }
 
-	public function view($template, $data = array()) {
-		// $this->event->trigger('pre.view.' . str_replace('/', '.', $template), $data);
+        $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
 
-		$file = DIR_TEMPLATE . $template;
+        if (file_exists($file)) {
+            include_once($file);
 
-		if (file_exists($file)) {
-			extract($data);
+            $this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
+        } else {
+            trigger_error('Error: Could not load model ' . $file . '!');
+            exit();
+        }
 
-			ob_start();
+        // $this->event->trigger('post.model.' . str_replace('/', '.', (string)$model), $output);
+    }
 
-			require($file);
+    public function view($template, $data = array())
+    {
+        // $this->event->trigger('pre.view.' . str_replace('/', '.', $template), $data);
 
-			$output = ob_get_contents();
+        //se o twig for desativado
+        if (!$this->config()->get('enable_twig')) {
+            return $this->viewRaw($template, $data);
+        }
 
-			ob_end_clean();
-		} else {
-			trigger_error('Error: Could not load template ' . $file . '!');
-			exit();
-		}
+        Twig_Autoloader::register();
 
-		// $this->event->trigger('post.view.' . str_replace('/', '.', $template), $output);
+        $paths = [];
 
-		return $output;
-	}
+        //pega o nome do template atual
+        $template_name = $this->config()->get('config_template');
 
-	public function helper($helper) {
-		$file = DIR_SYSTEM . 'helper/' . str_replace('../', '', (string)$helper) . '.php';
+        //fix se ta sentando tema default
+        if (strpos($template, 'default/template/') !== false) {
+            $template = str_replace('default/template/', $template_name . '/template/', $template);
+        }
 
-		if (file_exists($file)) {
-			include_once($file);
-		} else {
-			trigger_error('Error: Could not load helper ' . $file . '!');
-			exit();
-		}
-	}
+        //check vqmod view
+        $vqmod_template = Vqmod::modCheck(DIR_TEMPLATE . $template);
+        if (strpos($vqmod_template, DIR_VQMOD_CACHE) !== false) {
 
-	public function config($config) {
-		$this->registry->get('config')->load($config);
-	}
+            $paths[] = DIR_VQMOD_CACHE;
+            $template = str_replace(DIR_VQMOD_CACHE, '', $vqmod_template);
 
-	public function language($language) {
-		return $this->registry->get('language')->load($language);
-	}
+        } else {
+            //load theme view
+            if (is_dir(DIR_TEMPLATE . $template_name . '/template')) {
+                $paths[] = DIR_TEMPLATE . $template_name . '/template';
+            }
+
+            if (is_dir(DIR_TEMPLATE . 'default/template')) {
+                $paths[] = DIR_TEMPLATE . 'default/template';
+            }
+
+            //load others view
+            $paths[] = DIR_TEMPLATE;
+
+            //Get all extensions
+            $extensions = Extension::getAll();
+
+            if ($extensions) {
+                //load extension view
+                if ($this->config()->get('is_admin')) {
+
+                    $extensions_path = glob(
+                        DIR_ROOT . '/' . $this->config()->get('extension_path') .
+                        '/*/*/' . $this->config()->get('admin_path') . '/view/template/',
+                        GLOB_ONLYDIR
+                    );
+
+                    if ($extensions_path && is_array($extensions_path) && count($extensions_path)) {
+                        $paths = array_merge($paths, $extensions_path);
+                    }
+                } else {
+
+                    $template_extension = str_replace($template_name . '/template/', '', $template);
+
+                    $extensions_path = glob(
+                        DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('theme_path') . '/template/',
+                        GLOB_ONLYDIR
+                    );
+
+                    if ($extensions_path && is_array($extensions_path) && count($extensions_path)) {
+                        foreach ($extensions_path as $item) {
+                            if (file_exists($item . $template_extension)) {
+                                $template = $template_extension;
+                                $paths = array_merge($paths, $extensions_path);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $fileSystem = new Twig_Loader_Filesystem($paths);
+
+        $loader = new Twig_Loader_Chain([$fileSystem]);
+
+        $cache = false;
+        if ($this->config()->get('twig_cache')) {
+            $cache = DIR_STORAGE . '/' . $this->config()->get('twig_cache');
+        }
+
+        $twig = new Twig_Environment($fileSystem, array(
+            'autoescape' => $this->config()->get('twig_autoescape'),
+            'cache' => $cache,
+            'debug' => $this->config()->get('twig_debug')
+        ));
+
+        $twig->addExtension(new Twig_Extension_Debug());
+        $twig->addExtension(new \Newcart\System\TwigExtensions\Ecommerce($this->registry));
+
+        $this->registry->set('twig', $twig);
+        extract($data);
+        ob_start();
+
+        // First Step - Render Twig Native Templates
+        if ($fileSystem->exists(str_replace('.tpl', '', $template) . '.twig', $data)) {
+            $output = $this->registry->get('twig')->render(str_replace('.tpl', '', $template) . '.twig', $data);
+        } else {
+            $output = $this->registry->get('twig')->render($template, $data);
+        }
+
+        // Second Step - IF template has PHP Syntax, then execute
+        eval(' ?>' . $output);
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        // $this->event->trigger('post.view.' . str_replace('/', '.', $template), $output);
+
+        return $output;
+    }
+
+    /**
+     * Get view raw php tpl
+     * @param $template
+     * @param array $data
+     * @return string
+     */
+    public function viewRaw($template, $data = array())
+    {
+        // $this->event->trigger('pre.view.' . str_replace('/', '.', $template), $data);
+        //load extension view raw
+        $extensions_file = glob(
+            DIR_ROOT . '/' . $this->config()->get('theme_path') . '/' .
+            $this->config()->get('config_template') . '/template/' . $template
+        );
+
+        if ($extensions_file && is_array($extensions_file) && count($extensions_file)) {
+            $file = $extensions_file[0];
+        } else {
+            $file = DIR_TEMPLATE . $template;
+        }
+
+        if (file_exists($file)) {
+            extract($data);
+            ob_start();
+            require($file);
+            $output = ob_get_contents();
+            ob_end_clean();
+        } else {
+            trigger_error('Error: Could not load template ' . $file . '!');
+            exit();
+        }
+        // $this->event->trigger('post.view.' . str_replace('/', '.', $template), $output);
+        return $output;
+    }
+
+    public function helper($helper)
+    {
+        //load extension helper
+        $extensions_file = glob(DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/helper/' . str_replace('../', '', (string)$helper) . '.php');
+        if ($extensions_file && is_array($extensions_file) && count($extensions_file)) {
+            $file = $extensions_file[0];
+        } else {
+            $file = DIR_SYSTEM . 'helper/' . str_replace('../', '', (string)$helper) . '.php';
+        }
+
+        if (file_exists($file)) {
+            include_once($file);
+        } else {
+            trigger_error('Error: Could not load helper ' . $file . '!');
+            exit();
+        }
+    }
+
+    public function config()
+    {
+        return $this->registry->get('config');
+    }
+
+    public function language($language)
+    {
+        return $this->registry->get('language')->load($language);
+    }
 }
