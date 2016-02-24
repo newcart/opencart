@@ -101,32 +101,32 @@ final class Loader
         $paths = [];
 
         //pega o nome do template atual
-        $template_name = $this->config()->get('config_template');
+        $current_theme = $this->config()->get('config_template');
 
-        //fix se ta sentando tema default
-        if (strpos($template, 'default/template/') !== false) {
-            $template = str_replace('default/template/', $template_name . '/template/', $template);
-        }
+        //remove theme paths
+        $view = str_replace([
+            'default/template/',
+            $current_theme . '/template/'
+        ], '', $template);
 
         //check vqmod view
-        $vqmod_template = Vqmod::modCheck(DIR_TEMPLATE . $template);
+        $vqmod_template = Vqmod::modCheck(DIR_TEMPLATE . $current_theme . '/' . $view);
         if (strpos($vqmod_template, DIR_VQMOD_CACHE) !== false) {
 
             $paths[] = DIR_VQMOD_CACHE;
-            $template = str_replace(DIR_VQMOD_CACHE, '', $vqmod_template);
+            $view = str_replace(DIR_VQMOD_CACHE, '', $vqmod_template);
 
         } else {
+
             //load theme view
-            if (is_dir(DIR_TEMPLATE . $template_name . '/template')) {
-                $paths[] = DIR_TEMPLATE . $template_name . '/template';
+            if (is_dir(DIR_TEMPLATE . $current_theme . '/template/')) {
+                $paths[] = DIR_TEMPLATE . $current_theme . '/template/';
             }
 
-            if (is_dir(DIR_TEMPLATE . 'default/template')) {
-                $paths[] = DIR_TEMPLATE . 'default/template';
+            //load theme default
+            if (is_dir(DIR_TEMPLATE . $this->config()->get('theme_default') . '/template/')) {
+                $paths[] = DIR_TEMPLATE . $this->config()->get('theme_default') . '/template/';
             }
-
-            //load others view
-            $paths[] = DIR_TEMPLATE;
 
             //Get all extensions
             $extensions = Extension::getAll();
@@ -146,8 +146,6 @@ final class Loader
                     }
                 } else {
 
-                    $template_extension = str_replace($template_name . '/template/', '', $template);
-
                     $extensions_path = glob(
                         DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('theme_path') . '/template/',
                         GLOB_ONLYDIR
@@ -155,8 +153,8 @@ final class Loader
 
                     if ($extensions_path && is_array($extensions_path) && count($extensions_path)) {
                         foreach ($extensions_path as $item) {
-                            if (file_exists($item . $template_extension)) {
-                                $template = $template_extension;
+                            if (file_exists($item . $view)) {
+                                $template = $view;
                                 $paths = array_merge($paths, $extensions_path);
                             }
                         }
@@ -187,14 +185,15 @@ final class Loader
         extract($data);
         ob_start();
 
-        // First Step - Render Twig Native Templates
-        if ($fileSystem->exists(str_replace('.tpl', '', $template) . '.twig', $data)) {
-            $output = $this->registry->get('twig')->render(str_replace('.tpl', '', $template) . '.twig', $data);
+        if ($fileSystem->exists(str_replace('.tpl', '', $view) . '.twig', $data)) {
+            $output = $this->registry->get('twig')->render(str_replace('.tpl', '', $view) . '.twig', $data);
+        } else if ($fileSystem->exists($view, $data)) {
+            $output = $this->registry->get('twig')->render($view, $data);
         } else {
-            $output = $this->registry->get('twig')->render($template, $data);
+            trigger_error('Error: Could not load template ' . $template . '!');
+            exit();
         }
 
-        // Second Step - IF template has PHP Syntax, then execute
         eval(' ?>' . $output);
         $output = ob_get_contents();
         ob_end_clean();
