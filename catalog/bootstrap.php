@@ -244,6 +244,9 @@ $registry->set('openbay', new Openbay($registry));
 $event = new Event($registry);
 $registry->set('event', $event);
 
+//Load custom libraries
+include_once DIR_ROOT . '/vendor/newcart/system/src/Newcart/System/loadLibraries.php';
+
 $query = $db->query("SELECT * FROM " . $config->get('db_prefix') . "event");
 
 foreach ($query->rows as $result) {
