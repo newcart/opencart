@@ -35,9 +35,9 @@ class ModelToolImage extends Model {
 		}
 
 		if ($this->request->server['HTTPS']) {
-			return $this->config->get('config_ssl') . 'image/' . $new_image;
+			return $this->config->get('config_ssl') . $this->config->get('image_path') . '/' . $new_image;
 		} else {
-			return $this->config->get('config_url') . 'image/' . $new_image;
+			return $this->config->get('config_url') . $this->config->get('image_path') . '/' . $new_image;
 		}
 	}
 }
