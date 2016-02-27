@@ -2,33 +2,33 @@
 // Version
 define('VERSION', '2.1.0.2');
 
-// Configuration
-if (is_file('config.php')) {
-	require_once('config.php');
-}
+Vqmod::bootup(DIR_STORAGE);
 
-// Install
-if (!defined('DIR_APPLICATION')) {
-	header('Location: ../install/index.php');
-	exit;
-}
+//Get Configs
+$config = $GLOBALS['config'];
 
-// Startup
-require_once(DIR_SYSTEM . 'startup.php');
+// VQMODDED Startup
+require_once(Vqmod::modCheck(DIR_SYSTEM . 'startup.php'));
 
 // Registry
 $registry = new Registry();
 
-// Config
-$config = new Config();
+// Set Config in registry
 $registry->set('config', $config);
 
 // Database
-$db = new DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT);
+$db = new DB(
+	$config->get('db_driver'),
+	$config->get('db_hostname'),
+	$config->get('db_username'),
+	$config->get('db_password'),
+	$config->get('db_schema'),
+	$config->get('db_port')
+);
 $registry->set('db', $db);
 
 // Settings
-$query = $db->query("SELECT * FROM " . DB_PREFIX . "setting WHERE store_id = '0'");
+$query = $db->query("SELECT * FROM " . $config->get('db_prefix') . "setting WHERE store_id = '0'");
 
 foreach ($query->rows as $setting) {
 	if (!$setting['serialized']) {
@@ -110,7 +110,7 @@ $registry->set('session', $session);
 // Language
 $languages = array();
 
-$query = $db->query("SELECT * FROM `" . DB_PREFIX . "language`");
+$query = $db->query("SELECT * FROM `" . $config->get('db_prefix') . "language`");
 
 foreach ($query->rows as $result) {
 	$languages[$result['code']] = $result;
@@ -141,11 +141,14 @@ $registry->set('user', new User($registry));
 // OpenBay Pro
 $registry->set('openbay', new Openbay($registry));
 
+//Load custom libraries
+include_once DIR_ROOT . '/vendor/newcart/system/src/Newcart/System/loadLibraries.php';
+
 // Event
 $event = new Event($registry);
 $registry->set('event', $event);
 
-$query = $db->query("SELECT * FROM " . DB_PREFIX . "event");
+$query = $db->query("SELECT * FROM " . $config->get('db_prefix') . "event");
 
 foreach ($query->rows as $result) {
 	$event->register($result['trigger'], $result['action']);
@@ -169,9 +172,3 @@ if (isset($request->get['route'])) {
 } else {
 	$action = new Action('common/dashboard');
 }
-
-// Dispatch
-$controller->dispatch($action, new Action('error/not_found'));
-
-// Output
-$response->output();

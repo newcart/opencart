@@ -2,6 +2,8 @@
 // Version
 define('VERSION', '2.1.0.2');
 
+Vqmod::bootup(DIR_STORAGE);
+
 //Get Configs
 $config = $GLOBALS['config'];
 
