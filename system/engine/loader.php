@@ -118,44 +118,48 @@ final class Loader
 
         } else {
 
-            //load theme view
-            if (is_dir(DIR_TEMPLATE . $current_theme . '/template/')) {
-                $paths[] = DIR_TEMPLATE . $current_theme . '/template/';
-            }
+            if ($this->config()->get('is_admin')) {
+                $paths[] = DIR_TEMPLATE;
+            } else {
+                //load theme view
+                if (is_dir(DIR_TEMPLATE . $current_theme . '/template/')) {
+                    $paths[] = DIR_TEMPLATE . $current_theme . '/template/';
+                }
 
-            //load theme default
-            if (is_dir(DIR_TEMPLATE . $this->config()->get('theme_default') . '/template/')) {
-                $paths[] = DIR_TEMPLATE . $this->config()->get('theme_default') . '/template/';
-            }
+                //load theme default
+                if (is_dir(DIR_TEMPLATE . $this->config()->get('theme_default') . '/template/')) {
+                    $paths[] = DIR_TEMPLATE . $this->config()->get('theme_default') . '/template/';
+                }
 
-            //Get all extensions
-            $extensions = Extension::getAll();
+                //Get all extensions
+                $extensions = Extension::getAll();
 
-            if ($extensions) {
-                //load extension view
-                if ($this->config()->get('is_admin')) {
+                if ($extensions) {
+                    //load extension view
+                    if ($this->config()->get('is_admin')) {
 
-                    $extensions_path = glob(
-                        DIR_ROOT . '/' . $this->config()->get('extension_path') .
-                        '/*/*/' . $this->config()->get('admin_path') . '/view/template/',
-                        GLOB_ONLYDIR
-                    );
+                        $extensions_path = glob(
+                            DIR_ROOT . '/' . $this->config()->get('extension_path') .
+                            '/*/*/' . $this->config()->get('admin_path') . '/view/template/',
+                            GLOB_ONLYDIR
+                        );
 
-                    if ($extensions_path && is_array($extensions_path) && count($extensions_path)) {
-                        $paths = array_merge($paths, $extensions_path);
-                    }
-                } else {
+                        if ($extensions_path && is_array($extensions_path) && count($extensions_path)) {
+                            $paths = array_merge($paths, $extensions_path);
+                        }
+                    } else {
 
-                    $extensions_path = glob(
-                        DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('theme_path') . '/template/',
-                        GLOB_ONLYDIR
-                    );
+                        $extensions_path = glob(
+                            DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('theme_path') . '/template/',
+                            GLOB_ONLYDIR
+                        );
 
-                    if ($extensions_path && is_array($extensions_path) && count($extensions_path)) {
-                        foreach ($extensions_path as $item) {
-                            if (file_exists($item . $view)) {
-                                $template = $view;
-                                $paths = array_merge($paths, $extensions_path);
+                        if ($extensions_path && is_array($extensions_path) && count($extensions_path)) {
+                            foreach ($extensions_path as $item) {
+                                if (file_exists($item . $view)) {
+                                    $template = $view;
+                                    $paths = array_merge($paths, $extensions_path);
+                                }
                             }
                         }
                     }
@@ -164,8 +168,6 @@ final class Loader
         }
 
         $fileSystem = new Twig_Loader_Filesystem($paths);
-
-        $loader = new Twig_Loader_Chain([$fileSystem]);
 
         $cache = false;
         if ($this->config()->get('twig_cache')) {
