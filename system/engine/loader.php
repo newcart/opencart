@@ -1,5 +1,7 @@
 <?php
 
+use \Newcart\System\Modification\System\Engine\Loader as NewcartLoader;
+
 final class Loader
 {
     private $registry;
@@ -18,13 +20,7 @@ final class Loader
         // Break apart the route
         while ($parts) {
 
-            //load extension controller
-            $extensions_file = glob(DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('environment') . '/controller/' . implode('/', $parts) . '.php');
-            if ($extensions_file && is_array($extensions_file) && count($extensions_file)) {
-                $file = $extensions_file[0];
-            } else {
-                $file = DIR_APPLICATION . 'controller/' . implode('/', $parts) . '.php';
-            }
+            $file = (new NewcartLoader())->controller($route, $parts);
 
             $class = 'Controller' . preg_replace('/[^a-zA-Z0-9]/', '', implode('/', $parts));
 
@@ -63,13 +59,7 @@ final class Loader
     {
         // $this->event->trigger('pre.model.' . str_replace('/', '.', (string)$model), $data);
 
-        //load extension model
-        $extensions_file = glob(DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/' . $this->config()->get('environment') . '/model/' . $model . '.php');
-        if ($extensions_file && is_array($extensions_file) && count($extensions_file)) {
-            $file = $extensions_file[0];
-        } else {
-            $file = DIR_APPLICATION . 'model/' . $model . '.php';
-        }
+        $file = (new NewcartLoader())->view($model);
 
         $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
 
@@ -89,8 +79,7 @@ final class Loader
     {
         // $this->event->trigger('pre.view.' . str_replace('/', '.', $template), $data);
 
-        $loader = new \Newcart\System\Modification\System\Engine\Loader();
-        $output = $loader->view($template, $data);
+        $output = (new NewcartLoader())->view($template, $data);
 
         // $this->event->trigger('post.view.' . str_replace('/', '.', $template), $output);
 
@@ -99,13 +88,7 @@ final class Loader
 
     public function helper($helper)
     {
-        //load extension helper
-        $extensions_file = glob(DIR_ROOT . '/' . $this->config()->get('extension_path') . '/*/*/helper/' . str_replace('../', '', (string)$helper) . '.php');
-        if ($extensions_file && is_array($extensions_file) && count($extensions_file)) {
-            $file = $extensions_file[0];
-        } else {
-            $file = DIR_SYSTEM . 'helper/' . str_replace('../', '', (string)$helper) . '.php';
-        }
+        $file = (new NewcartLoader())->helper($helper);
 
         if (file_exists($file)) {
             include_once($file);
