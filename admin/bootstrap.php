@@ -43,7 +43,7 @@ $loader = new Loader($registry);
 $registry->set('load', $loader);
 
 // Url
-$url = new Url(HTTP_SERVER, $config->get('config_secure') ? HTTPS_SERVER : HTTP_SERVER);
+$url = new Url(HTTP_SERVER_DYNAMIC, $config->get('config_secure') ? HTTPS_SERVER_DYNAMIC : HTTP_SERVER_DYNAMIC);
 $registry->set('url', $url);
 
 // Log
