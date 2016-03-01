@@ -147,6 +147,8 @@ $languages = array();
 
 $query = $db->query("SELECT * FROM `" . $config->get('db_prefix') . "language` WHERE status = '1'");
 
+var_dump($query);
+
 foreach ($query->rows as $result) {
     $languages[$result['code']] = $result;
 }
