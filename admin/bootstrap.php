@@ -17,7 +17,7 @@ $registry = new Registry();
 $registry->set('config', $config);
 
 // Database
-$db = new DB(
+$db = new \Newcart\System\Modification\System\Library\DB(
 	$config->get('db_driver'),
 	$config->get('db_hostname'),
 	$config->get('db_username'),
@@ -25,6 +25,7 @@ $db = new DB(
 	$config->get('db_schema'),
 	$config->get('db_port')
 );
+
 $registry->set('db', $db);
 
 // Settings

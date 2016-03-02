@@ -15,62 +15,15 @@ final class Loader
     {
         // $this->event->trigger('pre.controller.' . $route, $data);
 
-        $parts = explode('/', str_replace('../', '', (string)$route));
+        return (new NewcartLoader())->controller($route, $data, $this->registry);
 
-        // Break apart the route
-        while ($parts) {
-
-            $file = (new NewcartLoader())->controller($route, $parts);
-
-            $class = 'Controller' . preg_replace('/[^a-zA-Z0-9]/', '', implode('/', $parts));
-
-            if (is_file($file)) {
-                include_once($file);
-
-                break;
-            } else {
-                $method = array_pop($parts);
-            }
-        }
-
-        $controller = new $class($this->registry);
-
-        if (!isset($method)) {
-            $method = 'index';
-        }
-
-        // Stop any magical methods being called
-        if (substr($method, 0, 2) == '__') {
-            return false;
-        }
-
-        $output = '';
-
-        if (is_callable(array($controller, $method))) {
-            $output = call_user_func(array($controller, $method), $data);
-        }
-
-        // $this->event->trigger('post.controller.' . $route, $output);
-
-        return $output;
     }
 
     public function model($model, $data = array())
     {
         // $this->event->trigger('pre.model.' . str_replace('/', '.', (string)$model), $data);
 
-        $file = (new NewcartLoader())->view($model);
-
-        $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
-
-        if (file_exists($file)) {
-            include_once($file);
-
-            $this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
-        } else {
-            trigger_error('Error: Could not load model ' . $file . '!');
-            exit();
-        }
+        return (new NewcartLoader())->model($model, $this->registry);
 
         // $this->event->trigger('post.model.' . str_replace('/', '.', (string)$model), $output);
     }
@@ -88,14 +41,7 @@ final class Loader
 
     public function helper($helper)
     {
-        $file = (new NewcartLoader())->helper($helper);
-
-        if (file_exists($file)) {
-            include_once($file);
-        } else {
-            trigger_error('Error: Could not load helper ' . $file . '!');
-            exit();
-        }
+        (new NewcartLoader())->helper($helper);
     }
 
     public function config()

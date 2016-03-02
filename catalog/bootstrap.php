@@ -21,7 +21,7 @@ $registry->set('load', $loader);
 $registry->set('config', $config);
 
 // Database
-$db = new DB(
+$db = new \Newcart\System\Modification\System\Library\DB(
     $config->get('db_driver'),
     $config->get('db_hostname'),
     $config->get('db_username'),
@@ -29,6 +29,7 @@ $db = new DB(
     $config->get('db_schema'),
     $config->get('db_port')
 );
+
 $registry->set('db', $db);
 
 // Store
@@ -146,8 +147,6 @@ if (isset($request->get['token']) && isset($request->get['route']) && substr($re
 $languages = array();
 
 $query = $db->query("SELECT * FROM `" . $config->get('db_prefix') . "language` WHERE status = '1'");
-
-var_dump($query);
 
 foreach ($query->rows as $result) {
     $languages[$result['code']] = $result;
