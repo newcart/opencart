@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationZone extends Model {
+
+	protected $table = 'zone';
+	protected $primaryKey = 'zone_id';
+	
 	public function getZone($zone_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone WHERE zone_id = '" . (int)$zone_id . "' AND status = '1'");
 

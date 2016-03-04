@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogAttribute extends Model {
+
+	protected $table = 'attribute';
+	protected $primaryKey = 'attribute_id';
+
 	public function addAttribute($data) {
 		$this->event->trigger('pre.admin.attribute.add', $data);
 

@@ -1,5 +1,9 @@
 <?php
 class ModelAccountApi extends Model {
+
+	protected $table = 'api';
+	protected $primaryKey = 'api_id';
+
 	public function getApiByKey($key) {
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "api` WHERE `key` = '" . $this->db->escape($key) . "' AND status = '1'");
 

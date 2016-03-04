@@ -1,5 +1,9 @@
 <?php
 class ModelSettingSetting extends Model {
+
+	protected $table = 'setting';
+	protected $primaryKey = 'setting_id';
+	
 	public function getSetting($code, $store_id = 0) {
 		$setting_data = array();
 

@@ -1,5 +1,9 @@
 <?php
 class ModelCheckoutOrder extends Model {
+
+	protected $table = 'order';
+	protected $primaryKey = 'order_id';
+	
 	public function addOrder($data) {
 		$this->event->trigger('pre.order.add', $data);
 

@@ -1,5 +1,9 @@
 <?php
 class ModelToolUpload extends Model {
+
+	protected $table = 'upload';
+	protected $primaryKey = 'upload_id';
+
 	public function addUpload($name, $filename) {
 		$code = sha1(uniqid(mt_rand(), true));
 

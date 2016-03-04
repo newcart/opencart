@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogProduct extends Model {
+
+	protected $table = 'product';
+	protected $primaryKey = 'product_id';
+
 	public function addProduct($data) {
 		$this->event->trigger('pre.admin.product.add', $data);
 

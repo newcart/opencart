@@ -1,5 +1,9 @@
 <?php
 class ModelCustomerCustomerGroup extends Model {
+
+	protected $table = 'customer_group';
+	protected $primaryKey = 'customer_group_id';
+
 	public function addCustomerGroup($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "customer_group SET approval = '" . (int)$data['approval'] . "', sort_order = '" . (int)$data['sort_order'] . "'");
 

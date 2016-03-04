@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationTaxClass extends Model {
+
+	protected $table = 'tax_class';
+	protected $primaryKey = 'tax_class_id';
+	
 	public function addTaxClass($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "tax_class SET title = '" . $this->db->escape($data['title']) . "', description = '" . $this->db->escape($data['description']) . "', date_added = NOW()");
 

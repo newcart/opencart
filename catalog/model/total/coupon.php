@@ -1,5 +1,9 @@
 <?php
 class ModelTotalCoupon extends Model {
+
+	protected $table = 'coupon';
+	protected $primaryKey = 'coupon_id';
+	
 	public function getCoupon($code) {
 		$status = true;
 

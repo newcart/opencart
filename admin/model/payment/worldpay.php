@@ -2,6 +2,9 @@
 
 class ModelPaymentWorldpay extends Model {
 
+	protected $table = 'worldpay_order';
+	protected $primaryKey = 'worldpay_order_id';
+
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "worldpay_order` (

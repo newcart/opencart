@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationStockStatus extends Model {
+
+	protected $table = 'stock_status';
+	protected $primaryKey = 'stock_status_id';
+	
 	public function addStockStatus($data) {
 		foreach ($data['stock_status'] as $language_id => $value) {
 			if (isset($stock_status_id)) {

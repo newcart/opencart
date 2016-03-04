@@ -1,5 +1,9 @@
 <?php
 class ModelFraudMaxMind extends Model {
+
+	protected $table = 'maxmind';
+	protected $primaryKey = 'maxmind_id';
+	
 	public function check($order_info) {
 		$risk_score = 0;
 

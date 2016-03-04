@@ -1,5 +1,9 @@
 <?php
 class ModelSettingStore extends Model {
+
+	protected $table = 'store';
+	protected $primaryKey = 'store_id';
+	
 	public function getStores($data = array()) {
 		$store_data = $this->cache->get('store');
 

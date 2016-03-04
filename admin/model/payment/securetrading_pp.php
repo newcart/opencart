@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentSecureTradingPp extends Model {
+
+	protected $table = 'securetrading_pp_order';
+	protected $primaryKey = 'securetrading_pp_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "securetrading_pp_order` (

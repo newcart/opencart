@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationLanguage extends Model {
+
+	protected $table = 'language';
+	protected $primaryKey = 'language_id';
+	
 	public function getLanguage($language_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "language WHERE language_id = '" . (int)$language_id . "'");
 

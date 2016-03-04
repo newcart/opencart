@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentRealex extends Model {
+
+	protected $table = 'realex_order';
+	protected $primaryKey = 'realex_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "realex_order` (

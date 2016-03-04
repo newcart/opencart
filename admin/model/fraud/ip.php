@@ -1,5 +1,9 @@
 <?php
 class ModelFraudIp extends Model {
+
+	protected $table = 'fraud_ip';
+	protected $primaryKey = 'fraud_ip_id';
+
 	public function install() {
 		$this->db->query("
 		CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "fraud_ip` (

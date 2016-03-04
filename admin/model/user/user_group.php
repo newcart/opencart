@@ -1,5 +1,9 @@
 <?php
 class ModelUserUserGroup extends Model {
+
+	protected $table = 'user_group';
+	protected $primaryKey = 'user_group_id';
+
 	public function addUserGroup($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "user_group SET name = '" . $this->db->escape($data['name']) . "', permission = '" . (isset($data['permission']) ? $this->db->escape(json_encode($data['permission'])) : '') . "'");
 	}

@@ -1,5 +1,9 @@
 <?php
 class ModelExtensionModule extends Model {
+
+	protected $table = 'module';
+	protected $primaryKey = 'module_id';
+	
 	public function addModule($code, $data) {
 		$this->db->query("INSERT INTO `" . DB_PREFIX . "module` SET `name` = '" . $this->db->escape($data['name']) . "', `code` = '" . $this->db->escape($code) . "', `setting` = '" . $this->db->escape(json_encode($data)) . "'");
 	}

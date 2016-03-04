@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogManufacturer extends Model {
+
+	protected $table = 'manufacturer';
+	protected $primaryKey = 'manufacturer_id';
+
 	public function addManufacturer($data) {
 		$this->event->trigger('pre.admin.manufacturer.add', $data);
 

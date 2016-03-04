@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationLanguage extends Model {
+
+	protected $table = 'language';
+	protected $primaryKey = 'language_id';
+	
 	public function addLanguage($data) {
 		$this->event->trigger('pre.admin.language.add', $data);
 

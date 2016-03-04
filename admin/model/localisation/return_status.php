@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationReturnStatus extends Model {
+
+	protected $table = 'return_status';
+	protected $primaryKey = 'return_status_id';
+	
 	public function addReturnStatus($data) {
 		foreach ($data['return_status'] as $language_id => $value) {
 			if (isset($return_status_id)) {

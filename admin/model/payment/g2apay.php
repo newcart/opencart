@@ -2,6 +2,9 @@
 
 class ModelPaymentG2aPay extends Model {
 
+	protected $table = 'g2apay_order';
+	protected $primaryKey = 'g2apay_order_id';
+
 	public function install() {
 		$this->db->query("
 			CREATE TABLE `" . DB_PREFIX . "g2apay_order` (

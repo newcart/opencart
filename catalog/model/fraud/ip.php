@@ -1,5 +1,9 @@
 <?php
 class ModelFraudIp extends Model {
+
+    protected $table = 'fraud_ip';
+    protected $primaryKey = 'fraud_ip_id';
+    
     public function check($order_info) {
         $this->load->model('account/customer');
 

@@ -1,5 +1,9 @@
 <?php
 class ModelExtensionExtension extends Model {
+
+	protected $table = 'extension';
+	protected $primaryKey = 'extension_id';
+	
 	public function getInstalled($type) {
 		$extension_data = array();
 

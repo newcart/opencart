@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentGlobalpay extends Model {
+
+	protected $table = 'globalpay_order';
+	protected $primaryKey = 'globalpay_order_id';
+
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "globalpay_order` (

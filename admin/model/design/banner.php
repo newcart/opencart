@@ -1,5 +1,9 @@
 <?php
 class ModelDesignBanner extends Model {
+
+	protected $table = 'banner';
+	protected $primaryKey = 'banner_id';
+	
 	public function addBanner($data) {
 		$this->event->trigger('pre.admin.banner.add', $data);
 

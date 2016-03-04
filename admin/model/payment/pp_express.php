@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentPPExpress extends Model {
+
+	protected $table = 'paypal_order';
+	protected $primaryKey = 'paypal_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "paypal_order` (

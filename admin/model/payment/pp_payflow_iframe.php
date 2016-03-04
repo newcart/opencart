@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentPPPayflowIFrame extends Model {
+
+	protected $table = 'paypal_payflow_iframe_order';
+	protected $primaryKey = 'paypal_payflow_iframe_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE `" . DB_PREFIX . "paypal_payflow_iframe_order` (

@@ -1,5 +1,9 @@
 <?php
 class ModelSaleVoucherTheme extends Model {
+
+	protected $table = 'voucher_theme';
+	protected $primaryKey = 'voucher_theme_id';
+	
 	public function addVoucherTheme($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "voucher_theme SET image = '" . $this->db->escape($data['image']) . "'");
 

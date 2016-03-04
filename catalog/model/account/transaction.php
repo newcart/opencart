@@ -1,5 +1,9 @@
 <?php
 class ModelAccountTransaction extends Model {
+
+	protected $table = 'customer_transaction';
+	protected $primaryKey = 'customer_transaction_id';
+	
 	public function getTransactions($data = array()) {
 		$sql = "SELECT * FROM `" . DB_PREFIX . "customer_transaction` WHERE customer_id = '" . (int)$this->customer->getId() . "'";
 

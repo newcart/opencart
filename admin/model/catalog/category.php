@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogCategory extends Model {
+
+	protected $table = 'category';
+	protected $primaryKey = 'category_id';
+
 	public function addCategory($data) {
 		$this->event->trigger('pre.admin.category.add', $data);
 

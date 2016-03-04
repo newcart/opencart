@@ -1,5 +1,9 @@
 <?php
 class ModelAccountReturn extends Model {
+
+	protected $table = 'return';
+	protected $primaryKey = 'return_id';
+	
 	public function addReturn($data) {
 		$this->event->trigger('pre.return.add', $data);
 

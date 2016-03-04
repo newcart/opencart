@@ -1,5 +1,9 @@
 <?php
 class ModelDesignLayout extends Model {
+
+	protected $table = 'layout';
+	protected $primaryKey = 'layout_id';
+
 	public function addLayout($data) {
 		$this->event->trigger('pre.admin.layout.add', $data);
 

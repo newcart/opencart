@@ -1,5 +1,9 @@
 <?php
 class ModelSettingStore extends Model {
+
+	protected $table = 'store';
+	protected $primaryKey = 'store_id';
+	
 	public function addStore($data) {
 		$this->event->trigger('pre.admin.store.add', $data);
 

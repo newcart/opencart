@@ -27,7 +27,8 @@ $db = new \Newcart\System\Modification\System\Library\DB(
     $config->get('db_username'),
     $config->get('db_password'),
     $config->get('db_schema'),
-    $config->get('db_port')
+    $config->get('db_port'),
+    $config->get('db_prefix')
 );
 
 $registry->set('db', $db);

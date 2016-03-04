@@ -1,5 +1,9 @@
 <?php
 class ModelAffiliateTransaction extends Model {
+
+	protected $table = 'affiliate_transaction';
+	protected $primaryKey = 'affiliate_transaction_id';
+
 	public function getTransactions($data = array()) {
 		$sql = "SELECT * FROM `" . DB_PREFIX . "affiliate_transaction` WHERE affiliate_id = '" . (int)$this->affiliate->getId() . "'";
 

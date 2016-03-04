@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationWeightClass extends Model {
+
+	protected $table = 'weight_class';
+	protected $primaryKey = 'weight_class_id';
+	
 	public function addWeightClass($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "weight_class SET value = '" . (float)$data['value'] . "'");
 

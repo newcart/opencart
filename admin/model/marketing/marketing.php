@@ -1,5 +1,9 @@
 <?php
 class ModelMarketingMarketing extends Model {
+
+	protected $table = 'marketing';
+	protected $primaryKey = 'marketing_id';
+	
 	public function addMarketing($data) {
 		$this->event->trigger('pre.admin.marketing.add', $data);
 

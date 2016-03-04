@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationReturnReason extends Model {
+
+	protected $table = 'return_reason';
+	protected $primaryKey = 'return_reason_id';
+	
 	public function addReturnReason($data) {
 		foreach ($data['return_reason'] as $language_id => $value) {
 			if (isset($return_reason_id)) {

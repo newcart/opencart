@@ -1,5 +1,9 @@
 <?php
 class ModelFraudFraudLabsPro extends Model {
+
+	protected $table = 'fraudlabspro';
+	protected $primaryKey = 'fraudlabspro_id';
+
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "fraudlabspro` (

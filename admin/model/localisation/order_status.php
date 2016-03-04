@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationOrderStatus extends Model {
+
+	protected $table = 'order_status';
+	protected $primaryKey = 'order_status_id';
+	
 	public function addOrderStatus($data) {
 		foreach ($data['order_status'] as $language_id => $value) {
 			if (isset($order_status_id)) {

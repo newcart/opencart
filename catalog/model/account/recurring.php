@@ -1,5 +1,9 @@
 <?php
 class ModelAccountRecurring extends Model {
+
+	protected $table = 'ecurring';
+	protected $primaryKey = 'ecurring_id';
+
 	private $recurring_status = array(
 		0 => 'Inactive',
 		1 => 'Active',

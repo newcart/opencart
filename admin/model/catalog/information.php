@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogInformation extends Model {
+
+	protected $table = 'information';
+	protected $primaryKey = 'information_id';
+
 	public function addInformation($data) {
 		$this->event->trigger('pre.admin.information.add', $data);
 

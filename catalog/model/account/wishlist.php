@@ -1,5 +1,9 @@
 <?php
 class ModelAccountWishlist extends Model {
+
+	protected $table = 'customer_wishlist';
+	protected $primaryKey = 'customer_wishlist_id';
+
 	public function addWishlist($product_id) {
 		$this->event->trigger('pre.wishlist.add');
 

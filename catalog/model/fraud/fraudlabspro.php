@@ -1,5 +1,9 @@
 <?php
 class ModelFraudFraudLabsPro extends Model {
+
+	protected $table = 'fraudlabspro';
+	protected $primaryKey = 'fraudlabspro_id';
+	
 	public function check($data) {
 		// Do not perform fraud check if FraudLabs Pro is disabled or API key is not provided.
 		if (!$this->config->get('fraudlabspro_status') ||!$this->config->get('fraudlabspro_key')) {

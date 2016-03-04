@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogAttributeGroup extends Model {
+
+	protected $table = 'attribute_group';
+	protected $primaryKey = 'attribute_group_id';
+
 	public function addAttributeGroup($data) {
 		$this->event->trigger('pre.admin.attribute_group.add', $data);
 

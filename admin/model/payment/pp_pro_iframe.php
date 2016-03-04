@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentPPProIframe extends Model {
+
+	protected $table = 'paypal_iframe_order';
+	protected $primaryKey = 'paypal_iframe_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "paypal_iframe_order` (

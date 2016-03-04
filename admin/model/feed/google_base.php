@@ -1,5 +1,9 @@
 <?php
 class ModelFeedGoogleBase extends Model {
+
+	protected $table = 'google_base_category';
+	protected $primaryKey = 'google_base_category_id';
+
 	public function install() {
 		$this->db->query("
 			CREATE TABLE `" . DB_PREFIX . "google_base_category` (

@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationReturnAction extends Model {
+
+	protected $table = 'return_action';
+	protected $primaryKey = 'return_action_id';
+	
 	public function addReturnAction($data) {
 		foreach ($data['return_action'] as $language_id => $value) {
 			if (isset($return_action_id)) {

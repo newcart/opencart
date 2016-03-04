@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentFirstdataRemote extends Model {
+
+	protected $table = 'firstdata_remote_order';
+	protected $primaryKey = 'firstdata_remote_order_id';
+
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "firstdata_remote_order` (

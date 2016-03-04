@@ -1,5 +1,9 @@
 <?php
 class ModelMarketingCoupon extends Model {
+
+	protected $table = 'coupon';
+	protected $primaryKey = 'coupon_id';
+	
 	public function addCoupon($data) {
 		$this->event->trigger('pre.admin.coupon.add', $data);
 

@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentSecureTradingWs extends Model {
+
+	protected $table = 'securetrading_ws_order';
+	protected $primaryKey = 'securetrading_ws_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "securetrading_ws_order` (

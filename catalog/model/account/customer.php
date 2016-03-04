@@ -1,5 +1,9 @@
 <?php
 class ModelAccountCustomer extends Model {
+
+	protected $table = 'customer';
+	protected $primaryKey = 'customer_id';
+	
 	public function addCustomer($data) {
 		$this->event->trigger('pre.customer.add', $data);
 

@@ -1,5 +1,9 @@
 <?php
 class ModelExtensionModification extends Model {
+
+	protected $table = 'modification';
+	protected $primaryKey = 'modification_id';
+
 	public function addModification($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "modification SET code = '" . $this->db->escape($data['code']) . "', name = '" . $this->db->escape($data['name']) . "', author = '" . $this->db->escape($data['author']) . "', version = '" . $this->db->escape($data['version']) . "', link = '" . $this->db->escape($data['link']) . "', xml = '" . $this->db->escape($data['xml']) . "', status = '" . (int)$data['status'] . "', date_added = NOW()");
 	}

@@ -1,5 +1,9 @@
 <?php
 class ModelReportCustomer extends Model {
+
+	protected $table = 'customer';
+	protected $primaryKey = 'customer_id';
+
 	public function getTotalCustomersByDay() {
 		$customer_data = array();
 

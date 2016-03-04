@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentSagepayDirect extends Model {
+
+	protected $table = 'sagepay_direct_order';
+	protected $primaryKey = 'sagepay_direct_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "sagepay_direct_order` (

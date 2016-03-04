@@ -1,5 +1,9 @@
 <?php
 class ModelAffiliateAffiliate extends Model {
+
+	protected $table = 'affiliate';
+	protected $primaryKey = 'affiliate_id';
+	
 	public function addAffiliate($data) {
 		$this->event->trigger('pre.affiliate.add', $data);
 

@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogRecurring extends Model {
+
+	protected $table = 'recurring';
+	protected $primaryKey = 'recurring_id';
+
 	public function addRecurring($data) {
 		$this->event->trigger('pre.admin.recurring.add', $data);
 

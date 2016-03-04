@@ -1,5 +1,9 @@
 <?php
 class ModelLocalisationCountry extends Model {
+
+	protected $table = 'country';
+	protected $primaryKey = 'country_id';
+	
 	public function getCountry($country_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "country WHERE country_id = '" . (int)$country_id . "' AND status = '1'");
 

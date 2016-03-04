@@ -4,7 +4,13 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 abstract class Model extends EloquentModel{
 	protected $registry;
 
-	public function __construct($registry) {
+	public $timestamps = false;
+//	protected $table = 'table';
+//	protected $primaryKey = 'table_id';
+
+	public function __construct() {
+
+		global $registry;
 		$this->registry = $registry;
 	}
 

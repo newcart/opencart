@@ -1,5 +1,9 @@
 <?php
 class ModelPaymentBluepayredirect extends Model {
+
+	protected $table = 'bluepay_redirect_order';
+	protected $primaryKey = 'bluepay_redirect_order_id';
+	
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "bluepay_redirect_order` (

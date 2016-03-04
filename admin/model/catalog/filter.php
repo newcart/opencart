@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogFilter extends Model {
+
+	protected $table = 'filter';
+	protected $primaryKey = 'filter_id';
+
 	public function addFilter($data) {
 		$this->event->trigger('pre.admin.filter.add', $data);
 

@@ -1,5 +1,9 @@
 <?php
 class ModelFraudMaxMind extends Model {
+
+	protected $table = 'maxmind';
+	protected $primaryKey = 'maxmind_id';
+
 	public function install() {
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "maxmind` (

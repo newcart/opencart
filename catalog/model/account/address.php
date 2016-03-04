@@ -1,5 +1,9 @@
 <?php
 class ModelAccountAddress extends Model {
+
+	protected $table = 'address';
+	protected $primaryKey = 'address_id';
+	
 	public function addAddress($data) {
 		$this->event->trigger('pre.customer.add.address', $data);
 

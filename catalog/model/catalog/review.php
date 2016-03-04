@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogReview extends Model {
+
+	protected $table = 'review';
+	protected $primaryKey = 'review_id';
+	
 	public function addReview($product_id, $data) {
 		$this->event->trigger('pre.review.add', $data);
 

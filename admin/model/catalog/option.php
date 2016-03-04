@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogOption extends Model {
+
+	protected $table = 'option';
+	protected $primaryKey = 'option_id';
+
 	public function addOption($data) {
 		$this->event->trigger('pre.admin.option.add', $data);
 

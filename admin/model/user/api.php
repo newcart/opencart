@@ -1,5 +1,9 @@
 <?php
 class ModelUserApi extends Model {
+
+	protected $table = 'api';
+	protected $primaryKey = 'api_id';
+	
 	public function addApi($data) {
 		$this->db->query("INSERT INTO `" . DB_PREFIX . "api` SET name = '" . $this->db->escape($data['name']) . "', `key` = '" . $this->db->escape($data['key']) . "', status = '" . (int)$data['status'] . "', date_added = NOW(), date_modified = NOW()");
 

@@ -1,5 +1,9 @@
 <?php
 class ModelCatalogDownload extends Model {
+
+	protected $table = 'download';
+	protected $primaryKey = 'download_id';
+
 	public function addDownload($data) {
 		$this->event->trigger('pre.admin.download.add', $data);
 

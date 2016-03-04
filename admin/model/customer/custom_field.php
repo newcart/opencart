@@ -1,5 +1,9 @@
 <?php
 class ModelCustomerCustomField extends Model {
+
+	protected $table = 'custom_field';
+	protected $primaryKey = 'custom_field_id';
+	
 	public function addCustomField($data) {
 		$this->db->query("INSERT INTO `" . DB_PREFIX . "custom_field` SET type = '" . $this->db->escape($data['type']) . "', value = '" . $this->db->escape($data['value']) . "', location = '" . $this->db->escape($data['location']) . "', status = '" . (int)$data['status'] . "', sort_order = '" . (int)$data['sort_order'] . "'");
 

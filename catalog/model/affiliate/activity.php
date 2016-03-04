@@ -1,5 +1,9 @@
 <?php
 class ModelAffiliateActivity extends Model {
+
+	protected $table = 'affiliate_activity';
+	protected $primaryKey = 'affiliate_activity_id';
+	
 	public function addActivity($key, $data) {
 		if (isset($data['affiliate_id'])) {
 			$affiliate_id = $data['affiliate_id'];

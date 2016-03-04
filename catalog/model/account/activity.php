@@ -1,5 +1,9 @@
 <?php
 class ModelAccountActivity extends Model {
+
+	protected $table = 'customer_activity';
+	protected $primaryKey = 'customer_activity_id';
+
 	public function addActivity($key, $data) {
 		if (isset($data['customer_id'])) {
 			$customer_id = $data['customer_id'];
