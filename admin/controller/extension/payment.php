@@ -121,6 +121,10 @@ class ControllerExtensionPayment extends Controller {
 
 		$files = glob(DIR_APPLICATION . 'controller/payment/*.php');
 
+		//files extensions
+		$files_extensions = glob(\Newcart\System\Libraries\Extension::dirExtension() . '*/*/' . $this->config->get('environment') . '/controller/payment/*.php');
+		$files = array_merge($files, $files_extensions);
+
 		if ($files) {
 			foreach ($files as $file) {
 				$extension = basename($file, '.php');

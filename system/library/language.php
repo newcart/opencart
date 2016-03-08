@@ -35,9 +35,9 @@ class Language {
 			require($file);
 		}
 
-		(new NewcartLanguage())->load($filename, $this->directory, $this->default);
-
+		$data = (new NewcartLanguage())->load($filename, $this->directory, $this->default);
 		$this->data = array_merge($this->data, $_);
+		$this->data = array_merge($this->data, $data);
 
 		return $this->data;
 	}
