@@ -110,7 +110,8 @@ class ControllerExtensionPayment extends Controller {
 		$extensions = $this->model_extension_extension->getInstalled('payment');
 
 		foreach ($extensions as $key => $value) {
-			if (!file_exists(DIR_APPLICATION . 'controller/payment/' . $value . '.php')) {
+			if (!file_exists(DIR_APPLICATION . 'controller/payment/' . $value . '.php' ) &&
+				!glob(\Newcart\System\Libraries\Extension::dirExtension() . '*/*/' . $this->config->get('environment') . '/controller/payment/' . $value . '.php')) {
 				$this->model_extension_extension->uninstall('payment', $value);
 
 				unset($extensions[$key]);
